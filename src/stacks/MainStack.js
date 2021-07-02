@@ -7,11 +7,12 @@ const Stack = createStackNavigator();
 import Preload  from '../screens/Preload';
 import SignIn from '../screens/SignIn';
 import SignUP from '../screens/SignUp';
+import SignUp from '../screens/SignUp';
 
 export default () => (
     <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="Preload" component={Preload} /> 
         <Stack.Screen name="SignIn" component={SignIn} />   
-        <Stack.Screen name="SignUP" component={SignUP} />        
+        <Stack.Screen name="SignUp" component={SignUp} />        
     </Stack.Navigator>
 );
