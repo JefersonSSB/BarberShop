@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import SvgUri from 'react-native-svg-uri';
 import { useNavigation } from '@react-navigation/native';
 import { 
@@ -10,31 +10,45 @@ import {
     SignMessageButtonText,
     SignMessageButtonTextBold
 
- } from './styles'
+ } from './styles';
 
-import Api from '../../Api'
+import Api from '../../Api';
 
-import SignInput from '../../components/SignInput'
-import BarberLogo from '../../assets/barber.svg'
-import EmailIcon from '../../assets/email.svg'
-import LockIcon from '../../assets/lock.svg'
+import SignInput from '../../components/SignInput';
+import BarberLogo from '../../assets/barber.svg';
+import EmailIcon from '../../assets/email.svg';
+import LockIcon from '../../assets/lock.svg';
+
+import AsyncStorage from '@react-native-community/async-storage';
+import { UserContext } from '../../contexts/UserContexts';
 
 export default ()=>{
 
-    const navigation = useNavigation();
+    const { dispatch : userDispatch} = useContext(UserContext);
+    const navigate = useNavigation();
 
     const [emailField, setEmailField] = useState('');
     const [passwordField, setPasswordField] = useState('');
 
     const handlerSignClick = async () => {
         if(emailField != '' && passwordField != ''){
-            let json = await Api.signIn(emailField, passwordField);
-            console.log(json);
-            if(json.token){
-                alert("DEU CERTO!");
+            let res = await Api.signIn(emailField, passwordField);
+            if(res.token){
+                await AsyncStorage.setItem('token', res.token);
+
+                userDispatch({
+                    type: 'setAvatar',
+                    payload:{
+                        avatar: res.data.avatar
+                    }
+                });
+
+                navigate.reset({
+                    routes:[{name:'MainTab'}]
+                });
             }
             else{
-                alert("Erro: "+json.error);
+                alert("Erro: "+res.error);
             }
         } else {
             alert("Preecha os campos!");
@@ -42,7 +56,7 @@ export default ()=>{
     }
 
     const handlerMessageButtonClick = () => {
-        navigation.reset({
+        navigate.reset({
             routes:[{name:'SignUp'}]
         }); 
     }

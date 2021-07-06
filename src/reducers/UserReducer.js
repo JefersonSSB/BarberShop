@@ -4,6 +4,7 @@ export const initialState = {
     appointments:[]
 };
 
+
 export const UserReducer = (state,action) =>{
 switch(action.type){
     case 'setAvatar':

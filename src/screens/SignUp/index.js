@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState} from 'react';
 import SvgUri from 'react-native-svg-uri';
 import { useNavigation } from '@react-navigation/native';
 import { 
@@ -10,19 +10,23 @@ import {
     SignMessageButtonText,
     SignMessageButtonTextBold
 
- } from './styles'
+ } from './styles';
 
-import Api from '../../Api'
+import Api from '../../Api';
 
-import SignInput from '../../components/SignInput'
-import BarberLogo from '../../assets/barber.svg'
-import EmailIcon from '../../assets/email.svg'
-import LockIcon from '../../assets/lock.svg'
-import PersonIcon from '../../assets/person.svg'
+import SignInput from '../../components/SignInput';
+import BarberLogo from '../../assets/barber.svg';
+import EmailIcon from '../../assets/email.svg';
+import LockIcon from '../../assets/lock.svg';
+import PersonIcon from '../../assets/person.svg';
+
+import AsyncStorage from '@react-native-community/async-storage';
+import { UserContext } from '../../contexts/UserContexts';
 
 export default ()=>{
 
-    const navigation = useNavigation();
+    const { dispatch : userDispatch} = useContext(UserContext);
+    const navigate = useNavigation();
 
     const [nameField, setNameField] = useState('');
     const [emailField, setEmailField] = useState('');
@@ -31,13 +35,24 @@ export default ()=>{
     const handlerSignClick = async () => {
 
         if(nameField != '' &&  emailField != '' && passwordField != ''){
-            let json = await Api.signUp(nameField, emailField, passwordField);
+            let res = await Api.signUp(nameField, emailField, passwordField);
 
             if(json.token){
-                alert("DEU CERTO!");
+                await AsyncStorage.setItem('token', res.token);
+
+                userDispatch({
+                    type: 'setAvatar',
+                    payload:{
+                        avatar: res.data.avatar
+                    }
+                });
+
+                navigate.reset({
+                    routes:[{name:'MainTab'}]
+                });
             }
             else{
-                alert("Erro: "+json.error);
+                alert("Erro: "+res.error);
             }
         } else {
             alert("Preecha os campos!");
