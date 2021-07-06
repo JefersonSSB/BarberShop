@@ -1,6 +1,8 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import styled from 'styled-components/native'
 import SvgUri from 'react-native-svg-uri';
+
+import {UserContext} from '../contexts/UserContexts'
 
 import HomeIcon from '../assets/home.svg';
 import SearchIcon from '../assets/search.svg';
@@ -20,10 +22,27 @@ justify-content: center;
 align-items: center;
 `;
 
+const  TabItemCenter = styled.TouchableOpacity`
+width:70px;
+height:70px;
+justify-content:center;
+align-items:center;
+background-color:#FFF;
+border-radius:35px;
+border: 3px solid  #4EADBE;
+margin-top: -20px;
+`;
 
+const AvatarIcon = styled.Image`
+width:24px;
+height:24px;
+border-radius:12px;
+`;
 
 
 export default ({state,navigation}) =>{
+
+    const { state:user } = useContext(UserContext);
 
     const goTo = (screenName) => {
         navigation.navigate(screenName);
@@ -31,19 +50,24 @@ export default ({state,navigation}) =>{
     return (
         <TabArea>
             <TabItem onPress={()=>goTo('Home')}>
-                <SvgUri width="24" height="24" fill="#FFF" source={HomeIcon} />
+                <SvgUri style={{opacity: state.index === 0? 1 : 0.6}} width="24" height="24" fill="#FFF" source={HomeIcon} />
             </TabItem >
             <TabItem onPress={()=>goTo('Search')}>
-                <SvgUri width="24" height="24" fill="#FFF" source={SearchIcon} />
+                <SvgUri style={{opacity: state.index === 1? 1 : 0.6}} width="24" height="24" fill="#FFF" source={SearchIcon} />
             </TabItem>
-            <TabItem onPress={()=>goTo('Appointments')}>
-                <SvgUri width="24" height="24" fill="#FFF" source={TodayIcon} />
-            </TabItem>
+            <TabItemCenter onPress={()=>goTo('Appointments')}>
+                <SvgUri style={{opacity: state.index === 2? 1 : 0.7}} width="32" height="32" fill="#4EADBE" source={TodayIcon} />
+            </TabItemCenter>
             <TabItem onPress={()=>goTo('Favorites')}>
-                <SvgUri width="24" height="24" fill="#FFF" source={FavoriteIcon} />
+                <SvgUri style={{opacity: state.index === 3? 1 : 0.6}} width="24" height="24" fill="#FFF" source={FavoriteIcon} />
             </TabItem>
             <TabItem onPress={()=>goTo('Profile')}>
-                <SvgUri width="24" height="24" fill="#FFF" source={AccountIcon} />
+                {user.avatar != '' ?
+                <AvatarIcon source={{uri: user.avatar}} />
+                :
+                <SvgUri style={{opacity: state.index === 4? 1 : 0.6}} width="24" height="24" fill="#FFF" source={AccountIcon} />
+                }
+                
             </TabItem>
         </TabArea>
     );
