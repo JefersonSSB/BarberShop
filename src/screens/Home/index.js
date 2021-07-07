@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { Platform, SectionList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Platform, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import SvgUri from 'react-native-svg-uri';
 
 import { request, PERMISSIONS } from 'react-native-permissions';
-import GetLocation from 'react-native-get-location'
+import GetLocation from 'react-native-get-location';
+
+import Api from '../../Api.js';
+
+import BarberItem from '../../components/BarberItem';
 
 import {
     Container,
@@ -15,7 +19,8 @@ import {
     LocationArea,
     LocationInput,
     LocationFinder,
-    LoadingIcon
+    LoadingIcon,
+    ListArea
 } from './styles'; 
 
 import SeachIcon from '../../assets/search.svg'
@@ -30,7 +35,9 @@ export default () =>{
 
     const [coords, setCoods] = useState('');
     const [loading, setLoading] = useState('');
-    const [list, setList] = useState('');
+    const [list, setList] = useState([]);
+
+    const [refreshing, setRefreshing] = useState(false); 
 
     const handleLocationFinder = async () => {
         setCoods(null);
@@ -62,11 +69,59 @@ export default () =>{
         }
 
 
-    };
+    }
+
+    const getBarbers = async () => {
+
+        setLoading(true);
+        setList([]);
+
+
+        let lat = null;
+        let lng = null;
+
+        if(coords){
+            lat = coords.latitude;
+            lng = coords.longitude;
+        }
+
+        let res = await Api.getBarbers(lat,lng, locationText);
+
+        if(res.error == ''){
+            if(res.loc){
+                setLocationText(res.loc);
+            }
+
+            setList(res.data);
+
+        }else{
+
+            alert('Erro: ' +res.error);
+        }
+        setLoading(false);
+    }
+
+    useEffect(() =>{
+        getBarbers();
+    },[]);
+
+    const onRefresh = () =>{
+        setRefreshing(false);
+        getBarbers();
+    }
+
+    const handleLocationSearch =() =>{
+
+        setCoods({});
+        getBarbers();
+    }
+
 
     return (
         <Container>
-            <Scroller>
+            <Scroller refreshControl = {
+                <RefreshControl refreshing = {refreshing} onRefresh={onRefresh}/>
+            }>
                 <HeaderArea>
                     <HeaderTitle numberOfLines={2}>Encontre o seu barbeiro favorito</HeaderTitle>
                         <SearchButton onPress={()=> navigation.navigate('Search')}>
@@ -80,6 +135,7 @@ export default () =>{
                         placeholderTextColor="#FFFFFF"
                         value={locationText}
                         onChangeText={t=>setLocationText(t)}
+                        onEndEditing={handleLocationSearch}
                     />
                     <LocationFinder onPress={handleLocationFinder}>
                         <SvgUri width="26" height="26" fill="#FFF" source={MyLocationIcon}/>
@@ -89,6 +145,12 @@ export default () =>{
                     <LoadingIcon size="large" color="#FFF"/>
                     : null
                 }
+
+                <ListArea>
+                    {list.map((item,k)=>(
+                        <BarberItem key={k} data={item}/>
+                    ))}
+                </ListArea>
             </Scroller>
         </Container>
     );

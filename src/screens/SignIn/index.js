@@ -9,7 +9,6 @@ import {
     SignMessageButtom,
     SignMessageButtonText,
     SignMessageButtonTextBold
-
  } from './styles';
 
 import Api from '../../Api';
