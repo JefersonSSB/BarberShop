@@ -33,17 +33,14 @@ export default ({stars, showNumber}) =>{
     }
 
     return (
-        <StarArea>
-            
+        <StarArea>    
             {s.map((i,k) => (
-                <StarView key={k}>
+            <StarView key={k}>
               {i === 0?  <SvgUri width="18" height="18" fill="#FF9200" source={StarEmpty} /> : null}
               {i === 1?  <SvgUri width="18" height="18" fill="#FF9200" source={StarHalf} /> : null}
               {i === 2?  <SvgUri width="18" height="18" fill="#FF9200" source={StarFull} /> : null}
-              </StarView> 
+            </StarView> 
               ))}
-
                {showNumber? <StarText>{stars}</StarText> :null }
         </StarArea>
-
     )}

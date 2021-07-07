@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react'
 import SvgUri from 'react-native-svg-uri';
 import { useNavigation } from '@react-navigation/native';
 import { 
@@ -62,7 +62,7 @@ export default ()=>{
     }
 
     const handlerMessageButtonClick = () => {
-        navigation.reset({
+        navigate.reset({
             routes:[{name:'SignIn'}]
         }); 
     }
