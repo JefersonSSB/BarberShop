@@ -93,6 +93,7 @@ export default () =>{
             }
 
             setList(res.data);
+            
 
         }else{
 
@@ -115,7 +116,6 @@ export default () =>{
         setCoods({});
         getBarbers();
     }
-
 
     return (
         <Container>
