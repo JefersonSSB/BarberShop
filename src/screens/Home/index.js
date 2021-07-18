@@ -134,7 +134,7 @@ export default () =>{
                         placeholder="Onde você esta?"
                         placeholderTextColor="#FFFFFF"
                         value={locationText}
-                        onChangeText={t=>setLocationText(t)}
+                        onChangeText={setLocationText}
                         onEndEditing={handleLocationSearch}
                     />
                     <LocationFinder onPress={handleLocationFinder}>

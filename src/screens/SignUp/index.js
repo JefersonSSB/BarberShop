@@ -75,19 +75,19 @@ export default ()=>{
                  IconSvg={PersonIcon}
                  placeholder="Digite seu nome"
                  value={nameField}
-                 onChangeText={t=>setNameField(t)}
+                 onChangeText={setNameField}
                  />
                 <SignInput
                  IconSvg={EmailIcon}
                  placeholder="Digite seu e-mail"
                  value={emailField}
-                 onChangeText={t=>setEmailField(t)}
+                 onChangeText={setEmailField}
                  />
                 <SignInput 
                 IconSvg={LockIcon}
                 placeholder="Digite sua senha"
                 value={passwordField}
-                onChangeText={t=>setPasswordField(t)}
+                onChangeText={setPasswordField}
                 password={true}
                 />
                 <CustomButtom onPress={handlerSignClick}>
